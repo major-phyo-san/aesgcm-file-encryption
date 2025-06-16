@@ -7,6 +7,7 @@ from PyQt6.QtCore import Qt
 
 from helpers.analytics import get_resource_usage
 from helpers.encrypt import encrypt_file, save_encrypted_to_file
+from helpers.keygen import generate_key
 
 class EncryptionPage(QWidget):
     def __init__(self,stack):
@@ -61,7 +62,7 @@ class EncryptionPage(QWidget):
         # Layout for inputs
         input_layout = QVBoxLayout()
         input_layout.addLayout(docfile_layout)
-        input_layout.addLayout(privatekeyfile_layout)
+        # input_layout.addLayout(privatekeyfile_layout)
 
         # Create and configure the "Encrypt File" button
         encrypt_button = QPushButton("Encrypt File")
@@ -101,9 +102,10 @@ class EncryptionPage(QWidget):
         self.setLayout(layout)
 
         self.docfile_path = None
-        self.privatekey_file_path = None
+        self.privatekey_file_path = None        
         self.encrypted = None
         self.signature = None
+        self.key = None
 
     def go_back(self):
         self.docfile_path = None
@@ -116,6 +118,7 @@ class EncryptionPage(QWidget):
         self.docfile_path = None
         self.privatekey_file_path = None
         self.stack.setCurrentIndex(0)
+        self.key = None
 
     def clear(self):
         self.docfile_path = None
@@ -127,6 +130,7 @@ class EncryptionPage(QWidget):
         self.privatekeyfile_label.setText("No key selected")
         self.docfile_path = None
         self.privatekey_file_path = None
+        self.key = None
             
     def pick_doc_file(self):
         file_path, _ = QFileDialog.getOpenFileName(self, "Select Audio File", "", "Audio Files (*.mp3 *.wav *.flac *.aac *.ogg *.m4a)")
@@ -146,15 +150,16 @@ class EncryptionPage(QWidget):
             QMessageBox.warning(self, "Warning", "No file selected")
             return
         
-        if not self.privatekey_file_path:
-            QMessageBox.warning(self, "Warning", "No key selected")
-            return
+        # if not self.privatekey_file_path:
+        #     QMessageBox.warning(self, "Warning", "No key selected")
+        #     return
 
         self.analysis_output.setPlainText("")
         try:
             tracemalloc.start()
             start_time = time.time()        
-            self.encrypted = encrypt_file(self.docfile_path, self.privatekey_file_path)
+            self.key = generate_key()
+            self.encrypted = encrypt_file(self.docfile_path, self.key)
             end_time = time.time()
             current, peak = tracemalloc.get_traced_memory()
             time_taken_ms = (end_time - start_time) * 10**3
@@ -178,7 +183,7 @@ class EncryptionPage(QWidget):
             return
         directory = QFileDialog.getExistingDirectory(self, "Select Save Directory")
         try:
-            info = save_encrypted_to_file(self.encrypted, directory)
+            info = save_encrypted_to_file(self.encrypted, self.key, directory)
             QMessageBox.information(self, "Success", info)
         except Exception as e:
             QMessageBox.critical(self, "Error", "Encrypted file failed to save")

@@ -1,14 +1,15 @@
 import os
 import random
 import string
+from datetime import datetime
 
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 from helpers.keyloaders import load_key_from_file
 
-def encrypt_file(file_path: str, key_file_path: str, output_path: str = None):
+def encrypt_file(file_path: str, key: str, output_path: str = None):
     try:
-        key = load_key_from_file(key_file_path)
+        # key = load_key_from_file(key_file_path)
         aesgcm = AESGCM(key)
         nonce = os.urandom(12)  # AES-GCM standard
     except Exception as e:
@@ -44,15 +45,20 @@ def encrypt_file(file_path: str, key_file_path: str, output_path: str = None):
 
     return payload
 
-def save_encrypted_to_file(encrypted, directory):
+def save_encrypted_to_file(encrypted, key, directory):
     encrypted_file_path = os.path.join(directory, generate_random_string() + ".enc")
     # output_path = file_path + ".enc"
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    keyname = f"{timestamp}_aes_key.key"
+    keypath = os.path.join(directory, keyname)
     try:
         with open(encrypted_file_path, "wb") as f:
             f.write(encrypted)
+        with open(keypath, "wb") as key_file:
+            key_file.write(key)
     except Exception as e:
         return None
-    return (f"Encrypted file saved to: {encrypted_file_path}")
+    return (f"Encrypted file and key saved to: {directory}")
 
 def generate_random_string(length=12):
     chars = string.ascii_letters + string.digits
