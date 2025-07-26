@@ -8,6 +8,8 @@ from pages.KeygenPage import KeygenPage
 from pages.EncryptionPage import EncryptionPage
 from pages.DecryptionPage import DecryptionPage
 
+from MainAppTabs import MainAppTabs
+
 class MainPage(QWidget):
     backgroundImage = "assets/background.jpg"
 
@@ -40,26 +42,40 @@ class MainPage(QWidget):
         title = QLabel("AES GCM File Encryption")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setFont(QFont("Arial", 28, QFont.Weight.Bold))
+        title.setStyleSheet("color: #003366;")
 
-        button_encrypt = QPushButton("Encrypt")
-        button_decrypt = QPushButton("Decrypt")
-
-        button_encrypt.clicked.connect(lambda: self.go_to_page(2))
-        button_decrypt.clicked.connect(lambda: self.go_to_page(3))
-
-        button_layout = QHBoxLayout()
-        button_layout.addWidget(button_encrypt)
-        button_layout.addWidget(button_decrypt)
-        button_layout.setSpacing(20)
-        button_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        start_button = QPushButton("Start")
+        start_button.clicked.connect(self.open_main_app)
 
         main_layout = QVBoxLayout()
         main_layout.addWidget(title)
         main_layout.addSpacing(40)
-        main_layout.addLayout(button_layout)
+        main_layout.addWidget(start_button, alignment=Qt.AlignmentFlag.AlignCenter)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.setLayout(main_layout)
+        # button_encrypt = QPushButton("Encrypt")
+        # button_decrypt = QPushButton("Decrypt")
+
+        # button_encrypt.clicked.connect(lambda: self.go_to_page(2))
+        # button_decrypt.clicked.connect(lambda: self.go_to_page(3))
+
+        # button_layout = QHBoxLayout()
+        # button_layout.addWidget(button_encrypt)
+        # button_layout.addWidget(button_decrypt)
+        # button_layout.setSpacing(20)
+        # button_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        # main_layout = QVBoxLayout()
+        # main_layout.addWidget(title)
+        # main_layout.addSpacing(40)
+        # main_layout.addLayout(button_layout)
+        # main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        # self.setLayout(main_layout)
+
+    def open_main_app(self):
+        self.stack.setCurrentIndex(1)
 
     def go_to_page(self, page_index):
         self.stack.setCurrentIndex(page_index)
@@ -81,17 +97,26 @@ class MainWindow(QStackedWidget):
         super().__init__()
 
         self.setWindowTitle("AES GCM File Encryption")
-        self.setGeometry(0, 0, 900, 600)
+        self.setGeometry(0, 0, 400, 600)
+
+        self.setWindowTitle("AES GCM File Encryption")
+        self.setGeometry(0, 0, 400, 600)
 
         self.main_page = MainPage(self)
-        self.page1 = KeygenPage(self)
-        self.page2 = EncryptionPage(self)
-        self.page3 = DecryptionPage(self)
+        self.tabs_page = MainAppTabs(self)
 
-        self.addWidget(self.main_page)
-        self.addWidget(self.page1)
-        self.addWidget(self.page2)
-        self.addWidget(self.page3)
+        self.addWidget(self.main_page)   # index 0
+        self.addWidget(self.tabs_page)   # index 1
+
+        # self.main_page = MainPage(self)
+        # self.page1 = KeygenPage(self)
+        # self.page2 = EncryptionPage(self)
+        # self.page3 = DecryptionPage(self)
+
+        # self.addWidget(self.main_page)
+        # self.addWidget(self.page1)
+        # self.addWidget(self.page2)
+        # self.addWidget(self.page3)
 
         self.setCurrentIndex(0)
 
