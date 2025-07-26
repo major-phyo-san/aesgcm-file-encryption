@@ -42,7 +42,7 @@ class MainPage(QWidget):
         title = QLabel("AES GCM File Encryption")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setFont(QFont("Arial", 28, QFont.Weight.Bold))
-        title.setStyleSheet("color: #003366;")
+        title.setStyleSheet("color: #001233;")
 
         start_button = QPushButton("Start")
         start_button.clicked.connect(self.open_main_app)
@@ -53,26 +53,7 @@ class MainPage(QWidget):
         main_layout.addWidget(start_button, alignment=Qt.AlignmentFlag.AlignCenter)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.setLayout(main_layout)
-        # button_encrypt = QPushButton("Encrypt")
-        # button_decrypt = QPushButton("Decrypt")
-
-        # button_encrypt.clicked.connect(lambda: self.go_to_page(2))
-        # button_decrypt.clicked.connect(lambda: self.go_to_page(3))
-
-        # button_layout = QHBoxLayout()
-        # button_layout.addWidget(button_encrypt)
-        # button_layout.addWidget(button_decrypt)
-        # button_layout.setSpacing(20)
-        # button_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        # main_layout = QVBoxLayout()
-        # main_layout.addWidget(title)
-        # main_layout.addSpacing(40)
-        # main_layout.addLayout(button_layout)
-        # main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        # self.setLayout(main_layout)
+        self.setLayout(main_layout)        
 
     def open_main_app(self):
         self.stack.setCurrentIndex(1)
@@ -101,6 +82,7 @@ class MainWindow(QStackedWidget):
 
         self.setWindowTitle("AES GCM File Encryption")
         self.setGeometry(0, 0, 400, 600)
+        self.setFixedSize(400, 600)
 
         self.main_page = MainPage(self)
         self.tabs_page = MainAppTabs(self)
