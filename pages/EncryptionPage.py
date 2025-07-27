@@ -42,7 +42,7 @@ class EncryptionPage(QWidget):
         #     font-size: 13px;
         # }
         
-        pageLabel = QLabel("Encryption")
+        pageLabel = QLabel("Audio File Encryption")
         pageLabel.setFont(QFont("Arial", 40, QFont.Weight.Bold))
         pageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -57,9 +57,10 @@ class EncryptionPage(QWidget):
         self.docfile_button = QPushButton("Select File")
         self.docfile_button.clicked.connect(self.pick_doc_file)
         self.docfile_label = QLabel("No file selected")
+        self.docfile_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         docfile_frame = QFrame()
-        docfile_layout = QHBoxLayout(docfile_frame)
+        docfile_layout = QVBoxLayout(docfile_frame)
         docfile_layout.addWidget(self.docfile_button)
         docfile_layout.addWidget(self.docfile_label)
 
@@ -99,8 +100,8 @@ class EncryptionPage(QWidget):
         content_layout.addWidget(pageLabel)
         content_layout.addWidget(heading_separator)
         content_layout.addWidget(docfile_frame, alignment=Qt.AlignmentFlag.AlignCenter)
-        content_layout.addWidget(self.analysis_output_label, alignment=Qt.AlignmentFlag.AlignCenter)
-        content_layout.addWidget(self.analysis_output, alignment=Qt.AlignmentFlag.AlignCenter)
+        # content_layout.addWidget(self.analysis_output_label, alignment=Qt.AlignmentFlag.AlignCenter)
+        # content_layout.addWidget(self.analysis_output, alignment=Qt.AlignmentFlag.AlignCenter)
         content_layout.addLayout(button_layout)
         content_layout.addWidget(clear_button, alignment=Qt.AlignmentFlag.AlignCenter)
         content_layout.addWidget(back_button, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -142,7 +143,9 @@ class EncryptionPage(QWidget):
         if file_path:
             file_size = os.stat(file_path).st_size / 1024
             self.docfile_path = file_path
-            self.docfile_label.setText(f"File selected, {file_size:.2f} KB")
+            file_name = os.path.basename(file_path)  # <-- Get just the file name
+            label_text = f"Audio file selected, (Name: {file_name}, Size: {file_size:.2f} KB)"
+            self.docfile_label.setText(label_text)
 
     def pick_privatekey_file(self):
         file_path, _ = QFileDialog.getOpenFileName(self, "Select Key", "", "Key Files (*.key)")
@@ -152,7 +155,7 @@ class EncryptionPage(QWidget):
 
     def encrypt_btn_clicked(self):
         if not self.docfile_path:
-            QMessageBox.warning(self, "Warning", "No file selected")
+            QMessageBox.warning(self, "Warning", "No audio file selected")
             return
 
         self.analysis_output.clear()
@@ -168,7 +171,7 @@ class EncryptionPage(QWidget):
             time_analysis = f"Time taken: {time_taken_ms:.2f} ms\nMemory usage: {peak / 1024:.2f} KB"
             self.analysis_output.setText(time_analysis)
 
-            QMessageBox.information(self, "Success", "File encrypted successfully")
+            QMessageBox.information(self, "Success", "Audio file encrypted successfully")
         except Exception as e:
             QMessageBox.critical(self, "Error", str(e))
 

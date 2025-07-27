@@ -37,7 +37,7 @@ class DecryptionPage(QWidget):
             }
         """)
 
-        pageLabel = QLabel("Decryption")
+        pageLabel = QLabel("Audio File Decryption")
         pageLabel.setFont(QFont("Arial", 40, QFont.Weight.Bold))
         pageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -52,18 +52,20 @@ class DecryptionPage(QWidget):
         self.docfile_button = QPushButton("Select Encrypted File")
         self.docfile_button.clicked.connect(self.pick_doc_file)
         self.docfile_label = QLabel("No file selected")
+        self.docfile_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         docfile_frame = QFrame()
-        docfile_layout = QHBoxLayout(docfile_frame)
+        docfile_layout = QVBoxLayout(docfile_frame)
         docfile_layout.addWidget(self.docfile_button)
         docfile_layout.addWidget(self.docfile_label)
 
         self.publickeyfile_button = QPushButton("Select Key File")
         self.publickeyfile_button.clicked.connect(self.pick_publickey_file)
         self.publickeyfile_label = QLabel("No key selected")
+        self.publickeyfile_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         publickeyfile_frame = QFrame()
-        publickeyfile_layout = QHBoxLayout(publickeyfile_frame)
+        publickeyfile_layout = QVBoxLayout(publickeyfile_frame)
         publickeyfile_layout.addWidget(self.publickeyfile_button)
         publickeyfile_layout.addWidget(self.publickeyfile_label)
 
@@ -95,8 +97,8 @@ class DecryptionPage(QWidget):
         content_layout.addWidget(heading_separator)
         content_layout.addWidget(docfile_frame, alignment=Qt.AlignmentFlag.AlignCenter)
         content_layout.addWidget(publickeyfile_frame, alignment=Qt.AlignmentFlag.AlignCenter)
-        content_layout.addWidget(self.analysis_output_label, alignment=Qt.AlignmentFlag.AlignCenter)
-        content_layout.addWidget(self.analysis_output, alignment=Qt.AlignmentFlag.AlignCenter)
+        # content_layout.addWidget(self.analysis_output_label, alignment=Qt.AlignmentFlag.AlignCenter)
+        # content_layout.addWidget(self.analysis_output, alignment=Qt.AlignmentFlag.AlignCenter)
         content_layout.addLayout(button_layout)
         content_layout.addWidget(clear_button, alignment=Qt.AlignmentFlag.AlignCenter)
         content_layout.addWidget(back_button, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -142,23 +144,21 @@ class DecryptionPage(QWidget):
         if file_path:
             file_size = os.stat(file_path).st_size / 1024
             self.docfile_path = file_path
-            self.docfile_label.setText(f"File selected, {file_size:.2f} KB in file size")
-
-    def pick_sig_file(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, "Select Signature File", "", "Sig Files (*.sig)")
-        if file_path:
-            self.signaturefile_path = file_path
-            self.sigfile_label.setText("Signature selected")
+            file_name = os.path.basename(file_path)  # <-- Get just the file name
+            label_text = f"Audio file selected, (Name: {file_name}, Size: {file_size:.2f} KB)"
+            self.docfile_label.setText(label_text)
 
     def pick_publickey_file(self):
         file_path, _ = QFileDialog.getOpenFileName(self, "Select Key", "", "Key Files (*.key)")
         if file_path:
             self.publickey_file_path = file_path
-            self.publickeyfile_label.setText("Key selected")
+            file_name = os.path.basename(self.publickey_file_path)  # <-- Get just the file name
+            label_text = f"Key selected, (Name: {file_name})"
+            self.publickeyfile_label.setText(label_text)
 
     def decrypt_btn_clicked(self):
         if not self.docfile_path:
-            QMessageBox.warning(self, "Warning", "No document file selected")
+            QMessageBox.warning(self, "Warning", "No audio file selected")
             return
 
         if not self.publickey_file_path:
@@ -181,7 +181,7 @@ class DecryptionPage(QWidget):
             time_analysis = f"Time taken: {time_taken_ms:.6f} ms\nMemory usage: {peak / 1024:.2f} KB"
             self.analysis_output.setText(time_analysis)
 
-            QMessageBox.information(self, "Success", "File decrypted successfully")
+            QMessageBox.information(self, "Success", "Audio file decrypted successfully")
         except Exception as e:
             QMessageBox.critical(self, "Error", repr(e))
             return

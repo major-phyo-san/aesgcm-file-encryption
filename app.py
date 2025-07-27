@@ -39,7 +39,7 @@ class MainPage(QWidget):
 
         self.set_background_image(self.backgroundImage)
 
-        title = QLabel("AES GCM File Encryption")
+        title = QLabel("AES GCM Audio File Encryption")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setFont(QFont("Arial", 28, QFont.Weight.Bold))
         title.setStyleSheet("color: #001233;")
@@ -82,7 +82,7 @@ class MainWindow(QStackedWidget):
 
         self.setWindowTitle("AES GCM File Encryption")
         self.setGeometry(0, 0, 400, 600)
-        self.setFixedSize(400, 600)
+        # self.setFixedSize(400, 600)
 
         self.main_page = MainPage(self)
         self.tabs_page = MainAppTabs(self)
