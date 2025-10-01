@@ -168,7 +168,7 @@ class EncryptionPage(QWidget):
             _, peak = tracemalloc.get_traced_memory()
             time_taken_ms = (end_time - start_time) * 1000
 
-            time_analysis = f"Time taken: {time_taken_ms:.2f} ms\nMemory usage: {peak / 1024:.2f} KB"
+            time_analysis = f"Time taken: {time_taken_ms:.2f} ms"
             self.analysis_output.setText(time_analysis)
 
             QMessageBox.information(self, "Success", "Audio file encrypted successfully")
